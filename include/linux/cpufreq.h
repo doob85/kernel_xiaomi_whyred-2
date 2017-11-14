@@ -527,12 +527,16 @@ void cpufreq_unregister_governor(struct cpufreq_governor *governor);
 
 #ifdef CONFIG_CPU_FREQ_GOV_SCHEDUTIL
 extern struct cpufreq_governor cpufreq_gov_schedutil;
+#elif CONFIG_CPU_FREQ_GOV_ELECTROUTIL
+extern struct cpufreq_governor cpufreq_gov_electroutil;
 #endif
-
 
 #ifdef CONFIG_CPU_FREQ_DEFAULT_GOV_SCHEDUTIL
 extern struct cpufreq_governor cpufreq_gov_schedutil;
 #define CPUFREQ_DEFAULT_GOVERNOR	(&cpufreq_gov_schedutil)
+#elif defined(CONFIG_CPU_FREQ_DEFAULT_GOV_ELECTROUTIL)
+extern struct cpufreq_governor cpufreq_gov_electroutil;
+#define CPUFREQ_DEFAULT_GOVERNOR	(&cpufreq_gov_electroutil)
 #endif
 
 static inline void cpufreq_policy_apply_limits(struct cpufreq_policy *policy)

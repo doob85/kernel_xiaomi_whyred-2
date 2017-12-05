@@ -77,4 +77,5 @@ subdir-ccflags-y += \
 
 
 
+CFLAGS_lkdtm_rodata.o		+= $(DISABLE_LTO)
 

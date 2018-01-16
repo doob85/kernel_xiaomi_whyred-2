@@ -65,6 +65,16 @@ endif
 ifeq ($(cc-name),clang)
 KBUILD_CFLAGS	+= -O3
 KBUILD_CFLAGS	+= $(call clang-ifversion, -ge, 0600, -mgeneral-regs-only, -mno-implicit-float, -DCONFIG_ARCH_SUPPORTS_INT128)
+KBUILD_CFLAGS	+= -mllvm -polly \
+		   -mllvm -polly-parallel -lgomp \
+		   -mllvm -polly-run-dce \
+		   -mllvm -polly-run-inliner \
+		   -mllvm -polly-opt-fusion=max \
+		   -mllvm -polly-ast-use-context \
+		   -mllvm -polly-detect-keep-going \
+		   -mllvm -polly-vectorizer=stripmine
+KBUILD_CFLAGS	+= $(call clang-ifversion, -funsafe-math-optimizations -ffast-math, -fvectorize -fslp-vectorize -fopenmp)
+
 else
 KBUILD_CFLAGS	+= -mgeneral-regs-only
 endif

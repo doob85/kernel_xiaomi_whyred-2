@@ -200,13 +200,16 @@ static int ion_no_pages_cache_ops(struct ion_client *client,
 				if (ptr) {
 					switch (cmd) {
 					case ION_IOC_CLEAN_CACHES:
-						__dma_clean_area(ptr, size_to_vmap);
+						dmac_clean_range(ptr,
+							ptr + size_to_vmap);
 						break;
 					case ION_IOC_INV_CACHES:
-						__dma_inv_area(ptr, size_to_vmap);
+						dmac_inv_range(ptr,
+							ptr + size_to_vmap);
 						break;
 					case ION_IOC_CLEAN_INV_CACHES:
-						__dma_flush_area(ptr, size_to_vmap);
+						dmac_flush_range(ptr,
+							ptr + size_to_vmap);
 						break;
 					default:
 						return -EINVAL;
@@ -226,13 +229,13 @@ static int ion_no_pages_cache_ops(struct ion_client *client,
 	} else {
 		switch (cmd) {
 		case ION_IOC_CLEAN_CACHES:
-			__dma_clean_area(vaddr, length);
+			dmac_clean_range(vaddr, vaddr + length);
 			break;
 		case ION_IOC_INV_CACHES:
-			__dma_inv_area(vaddr, length);
+			dmac_inv_range(vaddr, vaddr + length);
 			break;
 		case ION_IOC_CLEAN_INV_CACHES:
-			__dma_flush_area(vaddr, length);
+			dmac_flush_range(vaddr, vaddr + length);
 			break;
 		default:
 			return -EINVAL;
@@ -243,7 +246,7 @@ static int ion_no_pages_cache_ops(struct ion_client *client,
 }
 
 static void __do_cache_ops(struct page *page, unsigned int offset,
-		unsigned int length, void (*op)(const void *, size_t))
+		unsigned int length, void (*op)(const void *, const void *))
 {
 	unsigned int left = length;
 	unsigned long pfn;
@@ -255,7 +258,7 @@ static void __do_cache_ops(struct page *page, unsigned int offset,
 
 	if (!PageHighMem(page)) {
 		vaddr = page_address(page) + offset;
-		op(vaddr, length);
+		op(vaddr, vaddr + length);
 		goto out;
 	}
 
@@ -268,7 +271,7 @@ static void __do_cache_ops(struct page *page, unsigned int offset,
 
 		page = pfn_to_page(pfn);
 		vaddr = kmap_atomic(page);
-		op(vaddr + offset, len);
+		op(vaddr + offset, vaddr + offset + len);
 		kunmap_atomic(vaddr);
 
 		offset = 0;
@@ -289,7 +292,7 @@ static int ion_pages_cache_ops(struct ion_client *client,
 	struct scatterlist *sg;
 	int i;
 	unsigned int len = 0;
-	void (*op)(const void *, size_t);
+	void (*op)(const void *, const void *);
 
 
 	table = ion_sg_table(client, handle);
@@ -298,13 +301,13 @@ static int ion_pages_cache_ops(struct ion_client *client,
 
 	switch (cmd) {
 		case ION_IOC_CLEAN_CACHES:
-			op = __dma_clean_area;
+			op = dmac_clean_range;
 			break;
 		case ION_IOC_INV_CACHES:
-			op = __dma_inv_area;
+			op = dmac_inv_range;
 			break;
 		case ION_IOC_CLEAN_INV_CACHES:
-			op = __dma_flush_area;
+			op = dmac_flush_range;
 			break;
 		default:
 			return -EINVAL;

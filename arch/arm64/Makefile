@@ -44,8 +44,10 @@ KBUILD_CFLAGS	+= -mllvm -polly \
 					-mllvm -polly-detect-keep-going
 
 KBUILD_CFLAGS	+= -O3
-endif
+KBUILD_CFLAGS	+= $(call clang-ifversion, -ge, 0600, -mgeneral-regs-only, -mno-implicit-float)
+else
 KBUILD_CFLAGS	+= -mgeneral-regs-only
+endif
 KBUILD_CFLAGS	+= $(lseinstr)
 KBUILD_CFLAGS	+= -fno-pic
 KBUILD_CFLAGS	+= $(call cc-option, -mpc-relative-literal-loads)

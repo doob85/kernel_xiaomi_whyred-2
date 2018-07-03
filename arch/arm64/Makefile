@@ -55,11 +55,11 @@ KBUILD_AFLAGS	+= $(lseinstr)
 ifeq ($(CONFIG_CPU_BIG_ENDIAN), y)
 KBUILD_CPPFLAGS	+= -mbig-endian
 AS		+= -EB
-LD		+= -EB
+LDFLAGS		+= -EB -maarch64linuxb
 else
 KBUILD_CPPFLAGS	+= -mlittle-endian
 AS		+= -EL
-LD		+= -EL
+LDFLAGS		+= -EL -maarch64linux
 endif
 
 CHECKFLAGS	+= -D__aarch64__

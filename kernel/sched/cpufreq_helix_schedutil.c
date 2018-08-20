@@ -152,7 +152,7 @@ static void hxgov_update_commit(struct hxgov_policy *sg_policy, u64 time,
 
 	if (policy->fast_switch_enabled) {
 		if (sg_policy->next_freq == next_freq) {
-			trace_cpu_frequency(policy->cur, smp_processor_id());
+//			trace_cpu_frequency(policy->cur, smp_processor_id());
 			return;
 		}
 		sg_policy->next_freq = next_freq;
@@ -161,7 +161,7 @@ static void hxgov_update_commit(struct hxgov_policy *sg_policy, u64 time,
 			return;
 
 		policy->cur = next_freq;
-		trace_cpu_frequency(next_freq, smp_processor_id());
+//		trace_cpu_frequency(next_freq, smp_processor_id());
 	} else if (sg_policy->next_freq != next_freq) {
 		sg_policy->next_freq = next_freq;
 		sg_policy->work_in_progress = true;

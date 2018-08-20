@@ -154,7 +154,7 @@ static void eugov_update_commit(struct eugov_policy *eg_policy, u64 time,
 			return;
 
 		policy->cur = next_freq;
-		trace_cpu_frequency(next_freq, smp_processor_id());
+//		trace_cpu_frequency(next_freq, smp_processor_id());
 	} else {
 		eg_policy->work_in_progress = true;
 		irq_work_queue(&eg_policy->irq_work);

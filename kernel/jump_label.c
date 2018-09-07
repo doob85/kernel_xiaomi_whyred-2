@@ -56,6 +56,27 @@ jump_label_sort_entries(struct jump_entry *start, struct jump_entry *stop)
 
 static void jump_label_update(struct static_key *key);
 
+/*
+ * There are similar definitions for the !HAVE_JUMP_LABEL case in jump_label.h.
+ * The use of 'atomic_read()' requires atomic.h and its problematic for some
+ * kernel headers such as kernel.h and others. Since static_key_count() is not
+ * used in the branch statements as it is for the !HAVE_JUMP_LABEL case its ok
+ * to have it be a function here. Similarly, for 'static_key_enable()' and
+ * 'static_key_disable()', which require bug.h. This should allow jump_label.h
+ * to be included from most/all places for HAVE_JUMP_LABEL.
+ */
+int static_key_count(struct static_key *key)
+{
+	/*
+	 * -1 means the first static_key_slow_inc() is in progress.
+	 *  static_key_enabled() must return true, so return 1 here.
+	 */
+	int n = atomic_read(&key->enabled);
+
+	return n >= 0 ? n : 1;
+}
+EXPORT_SYMBOL_GPL(static_key_count);
+
 void static_key_slow_inc(struct static_key *key)
 {
 	int v, v1;
@@ -91,6 +112,43 @@ void static_key_slow_inc(struct static_key *key)
 	jump_label_unlock();
 }
 EXPORT_SYMBOL_GPL(static_key_slow_inc);
+
+void static_key_enable(struct static_key *key)
+{
+	STATIC_KEY_CHECK_USE();
+	if (atomic_read(&key->enabled) > 0) {
+		WARN_ON_ONCE(atomic_read(&key->enabled) != 1);
+		return;
+	}
+
+	get_online_cpus();
+	jump_label_lock();
+	if (atomic_read(&key->enabled) == 0) {
+		atomic_set(&key->enabled, -1);
+		jump_label_update(key);
+		atomic_set(&key->enabled, 1);
+	}
+	jump_label_unlock();
+	put_online_cpus();
+}
+EXPORT_SYMBOL_GPL(static_key_enable);
+
+void static_key_disable(struct static_key *key)
+{
+	STATIC_KEY_CHECK_USE();
+	if (atomic_read(&key->enabled) != 1) {
+		WARN_ON_ONCE(atomic_read(&key->enabled) != 0);
+		return;
+	}
+
+	get_online_cpus();
+	jump_label_lock();
+	if (atomic_cmpxchg(&key->enabled, 1, 0))
+		jump_label_update(key);
+	jump_label_unlock();
+	put_online_cpus();
+}
+EXPORT_SYMBOL_GPL(static_key_disable);
 
 static void __static_key_slow_dec(struct static_key *key,
 		unsigned long rate_limit, struct delayed_work *work)

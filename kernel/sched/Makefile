@@ -31,3 +31,4 @@ obj-y += boost.o
 obj-$(CONFIG_CPU_FREQ_GOV_ELECTROUTIL) += cpufreq_electroutil.o
 obj-$(CONFIG_CPU_FREQ_GOV_PWRUTILX) += cpufreq_pwrutilx.o
 obj-$(CONFIG_CPU_FREQ_GOV_DARKUTIL) += cpufreq_darkutil.o
+obj-$(CONFIG_CPU_FREQ_GOV_SCHEDALUCARD) += cpufreq_schedalucard.o

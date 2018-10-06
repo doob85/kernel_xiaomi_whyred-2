@@ -512,7 +512,7 @@ static void dugov_irq_work(struct irq_work *irq_work)
 	 * after the work_in_progress flag is cleared. The effects of that are
 	 * neglected for now.
 	 */
-	queue_kthread_work(&du_policy->worker, &du_policy->work);
+	kthread_queue_work(&du_policy->worker, &du_policy->work);
 }
 
 /************************** sysfs interface ************************/
@@ -859,10 +859,10 @@ static int dugov_kthread_create(struct dugov_policy *du_policy)
 	if (policy->fast_switch_enabled)
 		return 0;
 
-	init_kthread_work(&du_policy->work, dugov_work);
-	init_kthread_worker(&du_policy->worker);
+	kthread_init_work(&du_policy->work, dugov_work);
+	kthread_init_worker(&du_policy->worker);
 	thread = kthread_create(kthread_worker_fn, &du_policy->worker,
-				"dugov:%d",
+				"eugov:%d",
 				cpumask_first(policy->related_cpus));
 	if (IS_ERR(thread)) {
 		pr_err("failed to create eugov thread: %ld\n", PTR_ERR(thread));
@@ -889,7 +889,7 @@ static void dugov_kthread_stop(struct dugov_policy *du_policy)
 	if (du_policy->policy->fast_switch_enabled)
 		return;
 
-	flush_kthread_worker(&du_policy->worker);
+	kthread_flush_worker(&du_policy->worker);
 	kthread_stop(du_policy->thread);
 }
 
@@ -1143,3 +1143,5 @@ static int __init dugov_register(void)
 	return cpufreq_register_governor(&cpufreq_gov_darkutil);
 }
 fs_initcall(dugov_register);
+
+

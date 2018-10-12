@@ -537,6 +537,8 @@ extern struct cpufreq_governor cpufreq_gov_darkutil;
 extern struct cpufreq_governor cpufreq_gov_schedalucard;
 #elif CONFIG_CPU_FREQ_GOV_BLU_SCHEDUTIL
 extern struct cpufreq_governor cpufreq_gov_blu_schedutil;
+#elif CONFIG_CPU_FREQ_GOV_HELIX
+extern struct cpufreq_governor cpufreq_gov_helix_schedutil;
 #endif
 
 #ifdef CONFIG_CPU_FREQ_DEFAULT_GOV_SCHEDUTIL
@@ -557,6 +559,9 @@ extern struct cpufreq_governor cpufreq_gov_schedalucard;
 #elif defined(CONFIG_CPU_FREQ_DEFAULT_GOV_BLU_SCHEDUTIL)
 extern struct cpufreq_governor cpufreq_gov_blu_schedutil;
 #define CPUFREQ_DEFAULT_GOVERNOR	(&cpufreq_gov_blu_schedutil)
+#elif defined(CPU_FREQ_DEFAULT_GOV_HELIX)
+extern struct cpufreq_governor cpufreq_gov_helix_schedutil;
+#define CPUFREQ_DEFAULT_GOVERNOR	(&cpufreq_gov_helix_schedutil)
 #endif
 
 

@@ -3106,7 +3106,6 @@ static int clk_cpu_osm_driver_probe(struct platform_device *pdev)
 	char perfclspeedbinstr[] = "qcom,perfcl-speedbin0-v0";
 	char pwrclspeedbinstr[] = "qcom,pwrcl-speedbin0-v0";
 
-
 	/*
 	 * Require the RPM-XO clock and GCC-HMSS-GPLL0 clocks to be registererd
 	 * before OSM.

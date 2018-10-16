@@ -2506,7 +2506,6 @@ fail:
 	return NULL;
 }
 
-
 static void populate_opp_table(struct platform_device *pdev)
 {
 	int cpu;

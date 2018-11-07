@@ -3681,7 +3681,6 @@ retry:
 			e->cmd = BR_OK;
 			ptr += sizeof(uint32_t);
 
-			binder_stat_br(proc, thread, cmd);
 			goto done; /* RETURN_ERROR notifications can finish transactions */
 		} break;
 		case BINDER_WORK_TRANSACTION_COMPLETE: {

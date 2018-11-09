@@ -1300,6 +1300,11 @@
 		qcom,mdss-dsi-panel-max-error-count = <3>;
 		qcom,mdss-dsi-pan-enable-dynamic-fps;
 		qcom,mdss-dsi-pan-fps-update = "dfps_immediate_porch_mode_vfp";
+		qcom,mdss-dsi-pan-enable-dynamic-bitclk;
+		qcom,mdss-dsi-dynamic-bitclk_freq = <798240576 801594528 804948480
+		808302432 811656384>;
+		qcom,ulps-enabled;
+		qcom,suspend-ulps-enabled;
 		qcom,partial-update-enabled = "single_roi";
 		qcom,panel-roi-alignment = <2 2 4 2 1080 2>;
 	};

@@ -3374,7 +3374,7 @@ void sdhci_msm_dump_vendor_regs(struct sdhci_host *host)
 	if (host->cq_host)
 		sdhci_msm_cmdq_dump_debug_ram(host);
 
-	MMC_TRACE(host->mmc, "Data cnt: 0x%08x | Fifo cnt: 0x%08x\n",
+	/*MMC_TRACE(host->mmc, "Data cnt: 0x%08x | Fifo cnt: 0x%08x\n",
 		sdhci_msm_readl_relaxed(host,
 			msm_host_offset->CORE_MCI_DATA_CNT),
 		sdhci_msm_readl_relaxed(host,
@@ -3403,7 +3403,7 @@ void sdhci_msm_dump_vendor_regs(struct sdhci_host *host)
 	pr_info("Vndr func2: 0x%08x\n",
 		readl_relaxed(host->ioaddr +
 			msm_host_offset->CORE_VENDOR_SPEC_FUNC2));
-
+*/
 	/*
 	 * tbsel indicates [2:0] bits and tbsel2 indicates [7:4] bits
 	 * of CORE_TESTBUS_CONFIG register.

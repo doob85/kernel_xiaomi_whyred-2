@@ -662,8 +662,7 @@ static int cpu_power_select(struct cpuidle_device *dev,
 	int best_level = 0;
 	uint32_t latency_us = pm_qos_request_for_cpu(PM_QOS_CPU_DMA_LATENCY,
 							dev->cpu);
-	ktime_t delta_next;
-	s64 sleep_us = ktime_to_us(tick_nohz_get_sleep_length(&delta_next));
+	s64 sleep_us = ktime_to_us(tick_nohz_get_sleep_length());
 	uint32_t modified_time_us = 0;
 	uint32_t next_event_us = 0;
 	int i, idx_restrict;
@@ -1458,7 +1457,7 @@ bool psci_enter_sleep(struct lpm_cluster *cluster, int idx, bool from_idle)
 #endif
 
 static int lpm_cpuidle_select(struct cpuidle_driver *drv,
-		struct cpuidle_device *dev, bool *dummy)
+		struct cpuidle_device *dev)
 {
 	struct lpm_cluster *cluster = per_cpu(cpu_cluster, dev->cpu);
 
@@ -1585,6 +1584,7 @@ static struct cpuidle_governor lpm_governor = {
 	.name =		"qcom",
 	.rating =	30,
 	.select =	lpm_cpuidle_select,
+	.owner =	THIS_MODULE,
 };
 
 static int cluster_cpuidle_register(struct lpm_cluster *cl)

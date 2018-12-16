@@ -7794,7 +7794,6 @@ static void ufshcd_def_desc_sizes(struct ufs_hba *hba)
 }
 
 /**
->>>>>>> 965ca7bd57f6... scsi: ufs: read device descriptor once
  * ufshcd_probe_hba - probe hba to detect device and initialize
  * @hba: per-adapter instance
  *

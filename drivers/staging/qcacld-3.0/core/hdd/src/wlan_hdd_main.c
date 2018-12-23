@@ -660,7 +660,7 @@ uint8_t wlan_hdd_find_opclass(tHalHandle hal, uint8_t channel,
  */
 static void hdd_qdf_trace_enable(QDF_MODULE_ID moduleId, uint32_t bitmask)
 {
-	QDF_TRACE_LEVEL level;
+	//QDF_TRACE_LEVEL level;
 
 	/*
 	 * if the bitmask is the default value, then a bitmask was not

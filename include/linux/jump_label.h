@@ -129,10 +129,9 @@ static inline int static_key_count(struct static_key *key)
 	return n >= 0 ? n : 1;
 }
 
-#define JUMP_TYPE_FALSE		0UL
-#define JUMP_TYPE_TRUE		1UL
-#define JUMP_TYPE_LINKED	2UL
-#define JUMP_TYPE_MASK		3UL
+#define JUMP_TYPE_FALSE	0UL
+#define JUMP_TYPE_TRUE	1UL
+#define JUMP_TYPE_MASK	1UL
 
 static __always_inline bool static_key_false(struct static_key *key)
 {

@@ -1136,7 +1136,7 @@ static int dyntick_save_progress_counter(struct rcu_data *rdp,
 	rdp->dynticks_snap = atomic_add_return(0, &rdp->dynticks->dynticks);
 	rcu_sysidle_check_cpu(rdp, isidle, maxj);
 	if ((rdp->dynticks_snap & 0x1) == 0) {
-		trace_rcu_fqs(rdp->rsp->name, rdp->gpnum, rdp->cpu, TPS("dti"));
+		//trace_rcu_fqs(rdp->rsp->name, rdp->gpnum, rdp->cpu, TPS("dti"));
 		if (ULONG_CMP_LT(READ_ONCE(rdp->gpnum) + ULONG_MAX / 4,
 				 rdp->mynode->gpnum))
 			WRITE_ONCE(rdp->gpwrap, true);
@@ -1877,7 +1877,7 @@ static bool __note_gp_changes(struct rcu_state *rsp, struct rcu_node *rnp,
 		 * go looking for one.
 		 */
 		rdp->gpnum = rnp->gpnum;
-		trace_rcu_grace_period(rsp->name, rdp->gpnum, TPS("cpustart"));
+		//trace_rcu_grace_period(rsp->name, rdp->gpnum, TPS("cpustart"));
 		need_gp = !!(rnp->qsmask & rdp->grpmask);
 		rdp->cpu_no_qs.b.norm = need_gp;
 		rdp->rcu_qs_ctr_snap = __this_cpu_read(rcu_qs_ctr);
@@ -2221,9 +2221,9 @@ static int __noreturn rcu_gp_kthread(void *arg)
 				WRITE_ONCE(rsp->jiffies_kick_kthreads,
 					   jiffies + 3 * j);
 			}
-			trace_rcu_grace_period(rsp->name,
-					       READ_ONCE(rsp->gpnum),
-					       TPS("fqswait"));
+			//trace_rcu_grace_period(rsp->name,
+			//		       READ_ONCE(rsp->gpnum),
+			//		       TPS("fqswait"));
 			rsp->gp_state = RCU_GP_WAIT_FQS;
 			ret = swait_event_interruptible_timeout(rsp->gp_wq,
 					rcu_gp_fqs_check_wake(rsp, &gf), j);
@@ -2260,9 +2260,9 @@ static int __noreturn rcu_gp_kthread(void *arg)
 				cond_resched_rcu_qs();
 				WRITE_ONCE(rsp->gp_activity, jiffies);
 				WARN_ON(signal_pending(current));
-				trace_rcu_grace_period(rsp->name,
-						       READ_ONCE(rsp->gpnum),
-						       TPS("fqswaitsig"));
+				//trace_rcu_grace_period(rsp->name,
+				//		       READ_ONCE(rsp->gpnum),
+				//		       TPS("fqswaitsig"));
 				ret = 1; /* Keep old FQS timing. */
 				j = jiffies;
 				if (time_after(jiffies, rsp->jiffies_force_qs))

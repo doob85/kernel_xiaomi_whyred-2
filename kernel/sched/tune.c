@@ -421,9 +421,9 @@ schedtune_tasks_update(struct task_struct *p, int cpu, int idx, int task_count)
 			schedtune_cpu_update(cpu, now);
 	}
 
-	trace_sched_tune_tasks_update(p, cpu, tasks, idx,
-			bg->group[idx].boost, bg->boost_max,
-			bg->group[idx].ts);
+	//trace_sched_tune_tasks_update(p, cpu, tasks, idx,
+	//		bg->group[idx].boost, bg->boost_max,
+	//		bg->group[idx].ts);
 }
 
 /*

@@ -3591,7 +3591,7 @@ void preempt_count_add(int val)
 		ps->caddr[3] = CALLER_ADDR3;
 		ps->irqs_disabled = irqs_disabled();
 
-		trace_preempt_off(CALLER_ADDR0, ip);
+		//trace_preempt_off(CALLER_ADDR0, ip);
 	}
 }
 EXPORT_SYMBOL(preempt_count_add);
@@ -3622,12 +3622,12 @@ void preempt_count_sub(int val)
 		 * Trace preempt disable stack if preemption
 		 * is disabled for more than the threshold.
 		 */
-		if (delta > sysctl_preemptoff_tracing_threshold_ns)
-			trace_sched_preempt_disable(delta, ps->irqs_disabled,
-						ps->caddr[0], ps->caddr[1],
-						ps->caddr[2], ps->caddr[3]);
+		//if (delta > sysctl_preemptoff_tracing_threshold_ns)
+		//	trace_sched_preempt_disable(delta, ps->irqs_disabled,
+		//				ps->caddr[0], ps->caddr[1],
+		//				ps->caddr[2], ps->caddr[3]);
 
-                trace_preempt_on(CALLER_ADDR0, get_lock_parent_ip());
+                //trace_preempt_on(CALLER_ADDR0, get_lock_parent_ip());
 	}
 	__preempt_count_sub(val);
 }

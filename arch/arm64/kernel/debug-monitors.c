@@ -46,14 +46,16 @@ static void mdscr_write(u32 mdscr)
 {
 	unsigned long flags;
 	local_dbg_save(flags);
-	write_sysreg(mdscr, mdscr_el1);
+	asm volatile("msr mdscr_el1, %0" :: "r" (mdscr));
 	local_dbg_restore(flags);
 }
 NOKPROBE_SYMBOL(mdscr_write);
 
 static u32 mdscr_read(void)
 {
-	return read_sysreg(mdscr_el1);
+	u32 mdscr;
+	asm volatile("mrs %0, mdscr_el1" : "=r" (mdscr));
+	return mdscr;
 }
 NOKPROBE_SYMBOL(mdscr_read);
 
@@ -132,7 +134,7 @@ NOKPROBE_SYMBOL(disable_debug_monitors);
  */
 static void clear_os_lock(void *unused)
 {
-	write_sysreg(0, oslar_el1);
+	asm volatile("msr oslar_el1, %0" : : "r" (0));
 }
 
 static int os_lock_notify(struct notifier_block *self,

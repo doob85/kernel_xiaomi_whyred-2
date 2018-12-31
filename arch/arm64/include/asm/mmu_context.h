@@ -30,15 +30,18 @@
 #include <asm/pgtable.h>
 #include <linux/msm_rtb.h>
 #include <asm/tlbflush.h>
-#include <asm/sysreg.h>
 
 #ifdef CONFIG_PID_IN_CONTEXTIDR
 static inline void contextidr_thread_switch(struct task_struct *next)
 {
 	pid_t pid = task_pid_nr(next);
-        write_sysreg(task_pid_nr(next), contextidr_el1);
-        isb();
+	asm(
+	"	msr	contextidr_el1, %0\n"
+	"	isb"
+	:
+	: "r" (pid));
 	uncached_logk(LOGK_CTXID, (void *)(u64)pid);
+
 }
 #else
 static inline void contextidr_thread_switch(struct task_struct *next)
@@ -54,8 +57,11 @@ static inline void cpu_set_reserved_ttbr0(void)
 {
 	unsigned long ttbr = __pa_symbol(empty_zero_page);
 
-	write_sysreg(ttbr, ttbr0_el1);
-	isb();
+	asm(
+	"	msr	ttbr0_el1, %0			// set TTBR0\n"
+	"	isb"
+	:
+	: "r" (ttbr));
 }
 
 static inline void cpu_switch_mm(pgd_t *pgd, struct mm_struct *mm)
@@ -88,11 +94,13 @@ static inline void __cpu_set_tcr_t0sz(unsigned long t0sz)
 	if (!__cpu_uses_extended_idmap())
 		return;
 
-        tcr = read_sysreg(tcr_el1);
-        tcr &= ~TCR_T0SZ_MASK;
-        tcr |= TCR_T0SZ(VA_BITS) << TCR_T0SZ_OFFSET;
-        write_sysreg(tcr, tcr_el1);
-        isb();
+	asm volatile (
+	"	mrs	%0, tcr_el1	;"
+	"	bfi	%0, %1, %2, %3	;"
+	"	msr	tcr_el1, %0	;"
+	"	isb"
+	: "=&r" (tcr)
+	: "r"(t0sz), "I"(TCR_T0SZ_OFFSET), "I"(TCR_TxSZ_WIDTH));
 }
 
 #define cpu_set_default_tcr_t0sz()	__cpu_set_tcr_t0sz(TCR_T0SZ(VA_BITS))

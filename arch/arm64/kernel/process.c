@@ -276,7 +276,7 @@ void show_regs(struct pt_regs * regs)
 
 static void tls_thread_flush(void)
 {
-	write_sysreg(0, tpidr_el0);
+	asm ("msr tpidr_el0, xzr");
 
 	if (is_compat_task()) {
 		current->thread.tp_value = 0;
@@ -287,7 +287,7 @@ static void tls_thread_flush(void)
 		 * with a stale shadow state during context switch.
 		 */
 		barrier();
-		write_sysreg(0, tpidrro_el0);
+		asm ("msr tpidrro_el0, xzr");
 	}
 }
 
@@ -336,7 +336,7 @@ int copy_thread(unsigned long clone_flags, unsigned long stack_start,
 		 * Read the current TLS pointer from tpidr_el0 as it may be
 		 * out-of-sync with the saved value.
 		 */
-		*task_user_tls(p) = read_sysreg(tpidr_el0);
+		asm("mrs %0, tpidr_el0" : "=r" (*task_user_tls(p)));
 
 		if (stack_start) {
 			if (is_compat_thread(task_thread_info(p)))
@@ -372,7 +372,7 @@ static void tls_thread_switch(struct task_struct *next)
 {
 	unsigned long tpidr, tpidrro;
 
-	tpidr = read_sysreg(tpidr_el0);
+	asm("mrs %0, tpidr_el0" : "=r" (tpidr));
 	*task_user_tls(current) = tpidr;
 
 	tpidr = *task_user_tls(next);

@@ -2,7 +2,6 @@
 # Makefile for Kernel-based Virtual Machine module, HYP part
 #
 
-ccflags-y += $(DISABLE_CFI)
 
 ifeq ($(cc-name),clang)
 ccflags-y += -fno-jump-tables
